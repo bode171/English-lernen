@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English lernen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: one narrow column like a lesson book, big tap targets for a 10-year-old on iPad/iPhone */
+  --ink:#1B2A4A;
+  --ink-soft:#56627A;
+  --paper:#EEF3FA;
+  --card:#FFFFFF;
+  --line:#D6DFEC;
+  --sky:#1F6FEB;
+  --sky-soft:#E3EDFF;
+  --red:#E03A4B;
+  --sun:#FFC93C;
+  --sun-soft:#FFF4D1;
+  --good:#14996A;
+  --good-soft:#DDF5EA;
+  --bad:#D23B3B;
+  --bad-soft:#FDE3E3;
+  --display:"Fredoka","Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:18px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+#app{max-width:600px;margin:0 auto;padding:16px 16px 40px;min-height:100%;display:flex;flex-direction:column;gap:16px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:20px}
+.flag{width:44px;height:22px;border-radius:4px;flex:none;box-shadow:0 0 0 1.5px var(--line)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);font-weight:800;font-size:15px}
+.chip.hot{background:var(--sun-soft);border-color:var(--sun)}
+
+/* cards */
+.card{background:var(--card);border-radius:var(--r);padding:20px;border:1.5px solid var(--line)}
+.hero{background:var(--ink);color:#fff;border:0;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:var(--sky);opacity:.35}
+.hero > *{position:relative;z-index:1}
+.hero h1{font-size:30px}
+.hero .sub{color:#C9D4EA;margin-top:4px}
+.today{margin-top:16px;background:rgba(255,255,255,.08);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.today .k{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--sun);font-weight:800}
+.today .t{font-family:var(--display);font-size:22px;font-weight:600}
+.today .m{color:#C9D4EA;font-size:15px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;padding:12px 20px;border-radius:16px;font-family:var(--display);font-weight:600;font-size:20px;background:var(--sky);color:#fff;box-shadow:0 4px 0 #1553B5;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #1553B5}
+.btn.sun{background:var(--sun);color:var(--ink);box-shadow:0 4px 0 #D9A21A}
+.btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.btn.good{background:var(--good);box-shadow:0 4px 0 #0D7550}
+.btn.bad{background:var(--bad);box-shadow:0 4px 0 #A12424}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.row{display:flex;gap:12px}
+.row > *{flex:1}
+.stack{display:flex;flex-direction:column;gap:12px}
+.mt{margin-top:16px}
+
+/* week strip */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.week div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;color:var(--ink-soft);font-weight:700}
+.week i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:var(--paper);border:2px dashed var(--line);font-size:16px}
+.week i.on{background:var(--sun);border:2px solid var(--sun)}
+.week i.now{border-color:var(--sky);border-style:solid}
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:12px}
+.sec-title h2{font-size:21px}
+.sec-title span{color:var(--ink-soft);font-size:14px;font-weight:700}
+
+/* path of stages */
+.path{display:flex;flex-direction:column;gap:10px}
+.stage{display:grid;grid-template-columns:48px 1fr;gap:12px;align-items:start;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:var(--card)}
+.stage.cur{border-color:var(--sky);background:var(--sky-soft)}
+.stage.locked{opacity:.55}
+.num{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:var(--paper)}
+.stage.done .num{background:var(--good-soft)}
+.stage.cur .num{background:#fff}
+.stage h3{font-size:18px}
+.stage .de{color:var(--ink-soft);font-size:14px}
+.lessons{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ls{min-width:40px;height:34px;padding:0 10px;border-radius:10px;font-weight:800;font-size:14px;background:var(--paper);color:var(--ink-soft);border:1.5px solid var(--line)}
+.ls.done{background:var(--good);color:#fff;border-color:var(--good)}
+.ls.cur{background:var(--sky);color:#fff;border-color:var(--sky)}
+.ls.lock{pointer-events:none}
+
+/* lesson screen */
+.lesson-top{display:flex;align-items:center;gap:12px}
+.x{width:44px;height:44px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);font-size:20px;font-weight:800;flex:none}
+.bar{flex:1;height:14px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar b{display:block;height:100%;background:var(--good);border-radius:999px;transition:width .3s}
+.kind{font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--sky)}
+.q{font-family:var(--display);font-size:26px;font-weight:600;margin-top:4px}
+.big-emoji{font-size:84px;line-height:1;text-align:center}
+.word-en{font-family:var(--display);font-size:42px;font-weight:700;text-align:center;line-height:1.1}
+.word-de{text-align:center;font-size:20px;color:var(--ink-soft);font-weight:700}
+.speak{display:flex;justify-content:center;gap:10px}
+.sbtn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:var(--sky-soft);color:var(--sky);font-weight:800;font-size:17px;border:1.5px solid #BFD3FB}
+.sbtn.round{width:96px;height:96px;padding:0;justify-content:center;font-size:42px;border-radius:50%}
+.hint{background:var(--sun-soft);border-radius:12px;padding:10px 14px;font-weight:700;text-align:center}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{min-height:64px;padding:12px;border-radius:14px;background:var(--card);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-weight:800;font-size:19px;text-align:center}
+.opt.sel{border-color:var(--sky);background:var(--sky-soft)}
+.opt.right{border-color:var(--good);background:var(--good-soft);box-shadow:0 3px 0 var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);box-shadow:0 3px 0 var(--bad)}
+.opt[disabled]{cursor:default}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .col{display:flex;flex-direction:column;gap:10px}
+.match .opt{min-height:56px;font-size:17px}
+.match .opt.gone{opacity:.35;pointer-events:none;border-color:var(--good);background:var(--good-soft)}
+.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.slots{min-height:64px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:10px;border-radius:14px;border:2px dashed var(--line);background:var(--paper)}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tile{min-width:46px;height:50px;padding:0 14px;border-radius:12px;background:var(--card);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-weight:800;font-size:21px}
+.tile.used{visibility:hidden}
+.slots .tile{background:#fff;border-color:var(--sky)}
+.feedback{position:sticky;bottom:0;border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.feedback.ok{background:var(--good-soft);border:2px solid var(--good)}
+.feedback.no{background:var(--bad-soft);border:2px solid var(--bad)}
+.feedback h3{font-size:22px}
+.feedback.ok h3{color:var(--good)}
+.feedback.no h3{color:var(--bad)}
+.feedback p{margin:0;font-weight:700}
+.grammar h2{font-size:26px}
+.grammar .rule{background:var(--sun-soft);border-left:6px solid var(--sun);border-radius:10px;padding:12px 14px;font-weight:700;margin-top:12px}
+.ex{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.ex button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:10px 14px;border-radius:12px;background:var(--paper);border:1.5px solid var(--line);width:100%}
+.ex b{font-size:19px}
+.ex span{color:var(--ink-soft);font-size:15px}
+.stars{font-size:54px;text-align:center;letter-spacing:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--paper);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-family:var(--display);font-size:28px;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--ink-soft);font-weight:700}
+.wl{display:flex;flex-direction:column}
+.w{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.w:last-child{border-bottom:0}
+.w .e{font-size:28px;text-align:center}
+.w b{display:block;font-size:18px}
+.w span{color:var(--ink-soft);font-size:14px}
+.lvl{display:flex;gap:3px}
+.lvl i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.lvl i.on{background:var(--good)}
+.pron-big{text-align:center;font-family:var(--display);font-size:26px;font-weight:600;color:var(--sky);line-height:1.2}
+.pron-big small{display:block;font-family:var(--body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:800}
+.pr{color:var(--sky)!important;font-weight:800}
+.wbox{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:10px 12px}
+.wbox .e{font-size:40px;text-align:center}
+.wbox b{display:block;font-family:var(--display);font-size:24px}
+.wbox span{display:block;font-weight:700}
+.sel{width:100%;height:52px;margin-top:8px;border-radius:14px;border:2px solid var(--line);padding:0 12px;font:inherit;font-weight:700;color:var(--ink);background:#fff}
+.pindots{display:flex;justify-content:center;gap:14px;margin:4px 0}
+.pindots i{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink-soft)}
+.pindots i.on{background:var(--ink);border-color:var(--ink)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pk{height:60px;border-radius:14px;background:var(--paper);border:1.5px solid var(--line);font-family:var(--display);font-size:26px;font-weight:600}
+.pk:active{background:var(--sky-soft)}
+.mini{width:44px;height:44px;border-radius:50%;background:var(--sky-soft);font-size:20px}
+.muted{color:var(--ink-soft);font-size:15px}
+.field{display:flex;gap:10px;margin-top:12px}
+.field input{flex:1;min-width:0;height:52px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;font-size:19px;font-weight:700;color:var(--ink);background:#fff}
+.field .btn{width:auto;flex:none}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl td,.tbl th{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
+.tbl th{color:var(--ink-soft);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.linkbtn{color:var(--sky);font-weight:800;padding:8px 0}
+.danger{color:var(--bad)}
+.dialog{position:fixed;inset:0;background:rgba(27,42,74,.5);display:grid;place-items:center;padding:16px;z-index:10}
+.dialog .card{max-width:420px;width:100%}
+@media (min-width:700px){ .word-en{font-size:52px} .big-emoji{font-size:100px} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============================================================
+   INHALT – 10 Etappen, angelehnt an die Themen der 5. Klasse
+   (LehrplanPLUS Realschule Bayern, Englisch 1. Lernjahr)
+   Wort: [englisch, deutsch, bild]
+   ============================================================ */
+const UNITS = [
+ {title:"Hello!", de:"Hallo und Begrüßung", icon:"👋",
+  words:[["hello","hallo","👋"],["goodbye","auf Wiedersehen / tschüss","🖐️"],["yes","ja","✅"],["no","nein","❌"],["please","bitte","🙏"],
+         ["thank you","danke","💐"],["sorry","Entschuldigung","😔"],["name","der Name","📛"],["friend","der Freund / die Freundin","🤝"],["boy","der Junge","👦"],
+         ["girl","das Mädchen","👧"],["good morning","guten Morgen","🌅"],["How are you?","Wie geht es dir?","🙂"],["fine","gut (es geht mir gut)","👍"],["What's your name?","Wie heißt du?","❓"]],
+  grammar:{title:"I am – you are", rule:"I am = ich bin · you are = du bist. Kurzform: I'm, you're. Das I schreibt man immer groß!",
+    ex:[["I am Lena. / I'm Lena.","Ich bin Lena."],["You are my friend. / You're my friend.","Du bist mein Freund."],["My name is Tom.","Mein Name ist Tom."]]},
+  sentences:[["Hello, my name is Tom.","Hallo, mein Name ist Tom."],["I am a girl.","Ich bin ein Mädchen."],["How are you?","Wie geht es dir?"],["I'm fine, thank you.","Mir geht es gut, danke."],["You are my friend.","Du bist meine Freundin."]]},
+ {title:"Numbers & colours", de:"Zahlen und Farben", icon:"🎨",
+  words:[["one","eins","1️⃣"],["two","zwei","2️⃣"],["three","drei","3️⃣"],["four","vier","4️⃣"],["five","fünf","5️⃣"],
+         ["six","sechs","6️⃣"],["seven","sieben","7️⃣"],["eight","acht","8️⃣"],["nine","neun","9️⃣"],["ten","zehn","🔟"],
+         ["red","rot","🔴"],["blue","blau","🔵"],["green","grün","🟢"],["yellow","gelb","🟡"],["black","schwarz","⚫"],
+         ["white","weiß","⚪"],["orange","orange","🟠"],["brown","braun","🟤"],["purple","lila","🟣"],["pink","rosa","🌸"]],
+  grammar:{title:"Mehrzahl mit -s", rule:"Für mehr als eins hängst du meistens ein -s an: one boy → two boys. Nach s, sh, ch, x kommt -es: one bus → two buses.",
+    ex:[["one girl – three girls","ein Mädchen – drei Mädchen"],["one friend – two friends","ein Freund – zwei Freunde"],["one bus – four buses","ein Bus – vier Busse"]]},
+  sentences:[["I am ten.","Ich bin zehn."],["Two boys and three girls.","Zwei Jungen und drei Mädchen."],["My friend is nine.","Mein Freund ist neun."],["Red, blue and green.","Rot, blau und grün."]]},
+ {title:"My school", de:"Meine Schule", icon:"🏫",
+  words:[["school","die Schule","🏫"],["teacher","der Lehrer / die Lehrerin","🧑‍🏫"],["pupil","der Schüler / die Schülerin","🧒"],["classroom","das Klassenzimmer","🚪"],["book","das Buch","📕"],
+         ["pen","der Kuli / der Füller","🖊️"],["pencil","der Bleistift","✏️"],["ruler","das Lineal","📏"],["rubber","der Radiergummi","🧽"],["schoolbag","die Schultasche","🎒"],
+         ["pencil case","das Federmäppchen","👝"],["board","die Tafel","⬛"],["chair","der Stuhl","🪑"],["homework","die Hausaufgabe(n)","📝"],["lesson","die Unterrichtsstunde","📖"]],
+  grammar:{title:"a oder an?", rule:"a vor einem Mitlaut (a pen, a book). an vor einem Selbstlaut-Klang (an apple, an orange). This is … = Das ist …",
+    ex:[["This is a pen.","Das ist ein Kuli."],["This is an orange.","Das ist eine Orange."],["This is my teacher.","Das ist meine Lehrerin."]]},
+  sentences:[["This is my teacher.","Das ist mein Lehrer."],["This is a red pen.","Das ist ein roter Kuli."],["My schoolbag is blue.","Meine Schultasche ist blau."],["Where is my pencil?","Wo ist mein Bleistift?"],["I am a pupil.","Ich bin ein Schüler."]]},
+ {title:"My family", de:"Meine Familie", icon:"👨‍👩‍👧",
+  words:[["family","die Familie","👨‍👩‍👧‍👦"],["mum","die Mama","👩"],["dad","der Papa","👨"],["mother","die Mutter","👩‍🍼"],["father","der Vater","🧔"],
+         ["sister","die Schwester","👧"],["brother","der Bruder","👦"],["grandma","die Oma","👵"],["grandpa","der Opa","👴"],["parents","die Eltern","👫"],
+         ["baby","das Baby","👶"],["aunt","die Tante","👩‍🦰"],["uncle","der Onkel","👨‍🦱"],["cousin","der Cousin / die Cousine","🧑"],["pet","das Haustier","🐾"]],
+  grammar:{title:"my, your, his, her und 's", rule:"my = mein · your = dein · his = sein · her = ihr. Wem etwas gehört, zeigt 's: Tom's sister = Toms Schwester.",
+    ex:[["This is my brother.","Das ist mein Bruder."],["His name is Ben. Her name is Mia.","Sein Name ist Ben. Ihr Name ist Mia."],["Lena's dad is a teacher.","Lenas Papa ist Lehrer."]]},
+  sentences:[["This is my family.","Das ist meine Familie."],["My sister is ten.","Meine Schwester ist zehn."],["His name is Max.","Sein Name ist Max."],["Her brother is a baby.","Ihr Bruder ist ein Baby."],["Tom's dad is a teacher.","Toms Papa ist Lehrer."]]},
+ {title:"Days & time", de:"Wochentage und Uhrzeit", icon:"🕒",
+  words:[["Monday","Montag","📅"],["Tuesday","Dienstag","📅"],["Wednesday","Mittwoch","📅"],["Thursday","Donnerstag","📅"],["Friday","Freitag","📅"],
+         ["Saturday","Samstag","🛹"],["Sunday","Sonntag","☀️"],["today","heute","📍"],["tomorrow","morgen","➡️"],["week","die Woche","🗓️"],
+         ["weekend","das Wochenende","🎉"],["morning","der Morgen","🌅"],["afternoon","der Nachmittag","🌤️"],["evening","der Abend","🌆"],["o'clock","Uhr (volle Stunde)","🕗"]],
+  grammar:{title:"on, at, in bei Zeiten", rule:"Tage mit on (on Monday). Uhrzeiten mit at (at 8 o'clock). Tageszeiten mit in (in the morning). Wochentage schreibt man im Englischen groß!",
+    ex:[["on Friday","am Freitag"],["at seven o'clock","um sieben Uhr"],["in the evening","am Abend"]]},
+  sentences:[["Today is Monday.","Heute ist Montag."],["Tomorrow is Saturday.","Morgen ist Samstag."],["The lesson is at nine o'clock.","Die Stunde ist um neun Uhr."],["The weekend is Saturday and Sunday.","Das Wochenende ist Samstag und Sonntag."]]},
+ {title:"Food & drinks", de:"Essen und Trinken", icon:"🍎",
+  words:[["breakfast","das Frühstück","🥣"],["lunch","das Mittagessen","🍽️"],["dinner","das Abendessen","🍝"],["bread","das Brot","🍞"],["milk","die Milch","🥛"],
+         ["water","das Wasser","💧"],["juice","der Saft","🧃"],["apple","der Apfel","🍎"],["banana","die Banane","🍌"],["cheese","der Käse","🧀"],
+         ["egg","das Ei","🥚"],["sandwich","das Sandwich","🥪"],["chips","die Pommes","🍟"],["tea","der Tee","🍵"],["hungry","hungrig","😋"]],
+  grammar:{title:"I like – I don't like", rule:"I like = ich mag. I don't like = ich mag nicht. Fragen mit Do you like …? Antwort: Yes, I do. / No, I don't.",
+    ex:[["I like bananas.","Ich mag Bananen."],["I don't like tea.","Ich mag keinen Tee."],["Do you like cheese? – Yes, I do.","Magst du Käse? – Ja."]]},
+  sentences:[["I like apples.","Ich mag Äpfel."],["I don't like cheese.","Ich mag keinen Käse."],["Do you like milk?","Magst du Milch?"],["I am hungry.","Ich habe Hunger."],["Bread and an egg for breakfast.","Brot und ein Ei zum Frühstück."]]},
+ {title:"Hobbies", de:"Hobbys und Freizeit", icon:"⚽",
+  words:[["play football","Fußball spielen","⚽"],["play ice hockey","Eishockey spielen","🏒"],["swim","schwimmen","🏊"],["dance","tanzen","💃"],["sing","singen","🎤"],
+         ["read","lesen","📖"],["ride a bike","Fahrrad fahren","🚲"],["paint","malen","🎨"],["listen to music","Musik hören","🎧"],["watch TV","fernsehen","📺"],
+         ["play the guitar","Gitarre spielen","🎸"],["skate","Schlittschuh laufen","⛸️"],["draw","zeichnen","🖍️"],["cook","kochen","🍳"],["play computer games","Computerspiele spielen","🎮"]],
+  grammar:{title:"can – can't", rule:"can = kann/können. can't = kann nicht. Das Wort danach bleibt immer gleich: I can swim. She can swim.",
+    ex:[["I can swim.","Ich kann schwimmen."],["I can't sing.","Ich kann nicht singen."],["Can you dance? – Yes, I can.","Kannst du tanzen? – Ja."]]},
+  sentences:[["I can swim.","Ich kann schwimmen."],["I can't sing.","Ich kann nicht singen."],["Can you ride a bike?","Kannst du Fahrrad fahren?"],["My brother can play ice hockey.","Mein Bruder kann Eishockey spielen."]]},
+ {title:"My home", de:"Mein Zuhause", icon:"🏠",
+  words:[["house","das Haus","🏠"],["flat","die Wohnung","🏢"],["room","das Zimmer","🖼️"],["bedroom","das Schlafzimmer","🛏️"],["kitchen","die Küche","🧑‍🍳"],
+         ["bathroom","das Badezimmer","🛁"],["living room","das Wohnzimmer","🛋️"],["garden","der Garten","🌷"],["bed","das Bett","🛌"],["table","der Tisch","🍽️"],
+         ["door","die Tür","🚪"],["window","das Fenster","🪟"],["wardrobe","der Kleiderschrank","👗"],["lamp","die Lampe","💡"],["toilet","die Toilette","🚽"]],
+  grammar:{title:"there is – there are", rule:"There is = es gibt / da ist (eins). There are = es gibt / da sind (mehrere).",
+    ex:[["There is a bed in my room.","In meinem Zimmer ist ein Bett."],["There are two windows.","Es gibt zwei Fenster."],["Is there a garden? – Yes, there is.","Gibt es einen Garten? – Ja."]]},
+  sentences:[["There is a bed in my room.","In meinem Zimmer ist ein Bett."],["There are two windows.","Es gibt zwei Fenster."],["This is my bedroom.","Das ist mein Schlafzimmer."],["Where is the bathroom?","Wo ist das Badezimmer?"]]},
+ {title:"Animals", de:"Tiere", icon:"🐶",
+  words:[["dog","der Hund","🐶"],["cat","die Katze","🐱"],["horse","das Pferd","🐴"],["rabbit","das Kaninchen","🐰"],["bird","der Vogel","🐦"],
+         ["fish","der Fisch","🐟"],["mouse","die Maus","🐭"],["cow","die Kuh","🐮"],["pig","das Schwein","🐷"],["sheep","das Schaf","🐑"],
+         ["duck","die Ente","🦆"],["tiger","der Tiger","🐯"],["lion","der Löwe","🦁"],["elephant","der Elefant","🐘"],["monkey","der Affe","🐵"]],
+  grammar:{title:"have got – has got", rule:"I/you/we/they have got = habe/hast/haben. he/she/it has got = hat. Kurz: I've got, she's got.",
+    ex:[["I have got a dog.","Ich habe einen Hund."],["She has got two cats.","Sie hat zwei Katzen."],["Have you got a pet? – No, I haven't.","Hast du ein Haustier? – Nein."]]},
+  sentences:[["I have got a dog.","Ich habe einen Hund."],["She has got two cats.","Sie hat zwei Katzen."],["Have you got a pet?","Hast du ein Haustier?"],["The horse is brown.","Das Pferd ist braun."],["My grandpa has got a cow.","Mein Opa hat eine Kuh."]]},
+ {title:"Clothes & weather", de:"Kleidung und Wetter", icon:"🧣",
+  words:[["T-shirt","das T-Shirt","👕"],["jeans","die Jeans","👖"],["dress","das Kleid","👗"],["shoes","die Schuhe","👟"],["jacket","die Jacke","🧥"],
+         ["hat","der Hut","👒"],["cap","die Kappe","🧢"],["scarf","der Schal","🧣"],["socks","die Socken","🧦"],["sunny","sonnig","☀️"],
+         ["rainy","regnerisch","🌧️"],["cold","kalt","🥶"],["hot","heiß","🥵"],["snow","der Schnee","❄️"],["windy","windig","🌬️"]],
+  grammar:{title:"It's … und I'm wearing …", rule:"Beim Wetter sagt man It's … (It's sunny). Was du gerade anhast: I'm wearing … = Ich trage gerade …",
+    ex:[["It's cold today.","Heute ist es kalt."],["It's rainy and windy.","Es ist regnerisch und windig."],["I'm wearing a scarf.","Ich trage einen Schal."]]},
+  sentences:[["It is sunny today.","Heute ist es sonnig."],["It's cold and windy.","Es ist kalt und windig."],["I'm wearing a red jacket.","Ich trage eine rote Jacke."],["Where are my shoes?","Wo sind meine Schuhe?"],["My hat is blue.","Mein Hut ist blau."]]},
+ {title:"My town", de:"Meine Stadt (Plymouth)", icon:"🏙️",
+  words:[["town","die Stadt","🏘️"],["city","die Großstadt","🏙️"],["sea","das Meer","🌊"],["beach","der Strand","🏖️"],["harbour","der Hafen","⚓"],
+         ["shop","der Laden","🏪"],["park","der Park","🌳"],["street","die Straße","🛣️"],["bus stop","die Bushaltestelle","🚏"],["station","der Bahnhof","🚉"],
+         ["library","die Bücherei","📚"],["cinema","das Kino","🎬"],["sports centre","das Sportzentrum","🏟️"],["swimming pool","das Schwimmbad","🏊‍♀️"],["café","das Café","☕"]],
+  grammar:{title:"Fragewörter", rule:"where = wo · what = was · who = wer · when = wann · how = wie. Das Fragewort steht ganz vorne.",
+    ex:[["Where is the beach?","Wo ist der Strand?"],["Who is your friend?","Wer ist dein Freund?"],["When is your birthday?","Wann hast du Geburtstag?"]]},
+  sentences:[["Where is the library?","Wo ist die Bücherei?"],["Plymouth is a city by the sea.","Plymouth ist eine Stadt am Meer."],["The shop is next to the park.","Der Laden ist neben dem Park."],["Who is your teacher?","Wer ist dein Lehrer?"]]},
+ {title:"School subjects", de:"Schulfächer und Schultag", icon:"📐",
+  words:[["English","Englisch","🇬🇧"],["German","Deutsch","🇩🇪"],["maths","Mathe","➗"],["art","Kunst","🖼️"],["music","Musik","🎵"],
+         ["PE","Sport (Schulfach)","🤸"],["science","Naturwissenschaften","🔬"],["history","Geschichte","🏰"],["geography","Erdkunde","🌍"],["break","die Pause","🔔"],
+         ["timetable","der Stundenplan","🗒️"],["canteen","die Mensa","🍲"],["club","die AG / der Club","🧩"],["uniform","die Schuluniform","👔"],["computer","der Computer","💻"]],
+  grammar:{title:"he, she, it – das s muss mit!", rule:"Im Simple Present bekommt das Verb bei he, she, it ein -s: I play → she plays. I like → he likes. Ben goes → nach o kommt -es.",
+    ex:[["I like art. – She likes art.","Ich mag Kunst. – Sie mag Kunst."],["We play football. – He plays football.","Wir spielen Fußball. – Er spielt Fußball."],["Li goes to school.","Li geht zur Schule."]]},
+  sentences:[["I like art.","Ich mag Kunst."],["She likes maths.","Sie mag Mathe."],["Ben plays football after school.","Ben spielt nach der Schule Fußball."],["We have got English on Monday.","Wir haben am Montag Englisch."],["My favourite subject is music.","Mein Lieblingsfach ist Musik."]]},
+ {title:"My day", de:"Mein Tagesablauf", icon:"⏰",
+  words:[["get up","aufstehen","⏰"],["wash","sich waschen","🧼"],["brush my teeth","mir die Zähne putzen","🪥"],["get dressed","sich anziehen","🩳"],["go to school","zur Schule gehen","🚶"],
+         ["come home","nach Hause kommen","🏡"],["do my homework","meine Hausaufgaben machen","✍️"],["have dinner","zu Abend essen","🍽️"],["go to bed","ins Bett gehen","😴"],["always","immer","💯"],
+         ["usually","normalerweise","🔁"],["often","oft","🔂"],["sometimes","manchmal","🤷"],["never","nie","🚫"],["early","früh","🐓"]],
+  grammar:{title:"do / does bei Fragen und Verneinung", rule:"Fragen: Do you …? / Does he/she …? Verneinung: I don't … / he doesn't … Nach does und doesn't kommt das Verb ohne -s!",
+    ex:[["Do you get up early? – Yes, I do.","Stehst du früh auf? – Ja."],["Does she like tea? – No, she doesn't.","Mag sie Tee? – Nein."],["He doesn't like maths.","Er mag Mathe nicht."]]},
+  sentences:[["I always get up at seven o'clock.","Ich stehe immer um sieben Uhr auf."],["She never goes to bed early.","Sie geht nie früh ins Bett."],["Do you like school?","Magst du die Schule?"],["He doesn't like maths.","Er mag Mathe nicht."],["Does Li play the guitar?","Spielt Li Gitarre?"]]},
+ {title:"Months & seasons", de:"Monate und Jahreszeiten", icon:"📆",
+  words:[["January","Januar","❄️"],["February","Februar","☃️"],["March","März","🌱"],["April","April","🌦️"],["May","Mai","🌼"],
+         ["June","Juni","🍓"],["July","Juli","🏖️"],["August","August","🌻"],["September","September","🍂"],["October","Oktober","🎃"],
+         ["November","November","🌫️"],["December","Dezember","🎄"],["spring","der Frühling","🌷"],["summer","der Sommer","🌞"],["autumn","der Herbst","🍁"],
+         ["winter","der Winter","⛄"],["year","das Jahr","🗓️"],["month","der Monat","📆"],["date","das Datum","🔢"],["season","die Jahreszeit","🔄"]],
+  grammar:{title:"in May, on the 3rd of May", rule:"Monate und Jahreszeiten mit in (in May, in summer). Ein genaues Datum mit on (on the 3rd of May). Monate schreibt man groß!",
+    ex:[["My birthday is in May.","Ich habe im Mai Geburtstag."],["It's on the 12th of May.","Er ist am 12. Mai."],["In winter it's cold.","Im Winter ist es kalt."]]},
+  sentences:[["My birthday is in June.","Mein Geburtstag ist im Juni."],["In winter it is cold.","Im Winter ist es kalt."],["Christmas is in December.","Weihnachten ist im Dezember."],["Summer is my favourite season.","Der Sommer ist meine Lieblingsjahreszeit."]]},
+ {title:"Birthday party", de:"Geburtstagsparty", icon:"🎂",
+  words:[["birthday","der Geburtstag","🎂"],["party","die Party","🥳"],["present","das Geschenk","🎁"],["cake","der Kuchen","🍰"],["candle","die Kerze","🕯️"],
+         ["card","die Karte","💌"],["invitation","die Einladung","✉️"],["balloon","der Luftballon","🎈"],["guest","der Gast","🙋"],["game","das Spiel","🎲"],
+         ["sweets","die Süßigkeiten","🍬"],["pizza","die Pizza","🍕"],["Happy birthday!","Alles Gute zum Geburtstag!","🎉"],["celebrate","feiern","🎊"],["invite","einladen","📨"]],
+  grammar:{title:"Present Progressive – gerade jetzt", rule:"Was gerade jetzt passiert: am / is / are + Verb mit -ing. I am eating. She is dancing. They are singing.",
+    ex:[["I am eating cake.","Ich esse gerade Kuchen."],["Kinga is dancing.","Kinga tanzt gerade."],["They are singing.","Sie singen gerade."]]},
+  sentences:[["Happy birthday, Kinga!","Alles Gute zum Geburtstag, Kinga!"],["We are eating cake.","Wir essen gerade Kuchen."],["Jalen is opening his presents.","Jalen öffnet gerade seine Geschenke."],["Can you come to my party?","Kannst du zu meiner Party kommen?"],["The guests are dancing.","Die Gäste tanzen gerade."]]},
+ {title:"Sport", de:"Sport und Sportzentrum", icon:"🏀",
+  words:[["team","die Mannschaft","👥"],["match","das Spiel (Sport)","🆚"],["goal","das Tor","🥅"],["win","gewinnen","🏆"],["lose","verlieren","😞"],
+         ["ball","der Ball","🥎"],["tennis","Tennis","🎾"],["basketball","Basketball","🏀"],["volleyball","Volleyball","🏐"],["gym","die Turnhalle","🏋️"],
+         ["coach","der Trainer / die Trainerin","📋"],["player","der Spieler / die Spielerin","⛹️"],["run","rennen","🏃"],["jump","springen","🦘"],["throw","werfen","🤾"]],
+  grammar:{title:"Immer oder gerade jetzt?", rule:"Simple Present für Gewohnheiten (every day, always): I play tennis every Friday. Present Progressive für jetzt (now, look!): Look, I'm playing tennis!",
+    ex:[["I play basketball every Friday.","Ich spiele jeden Freitag Basketball."],["Look! Ben is running.","Schau! Ben rennt gerade."],["She is throwing the ball now.","Sie wirft jetzt gerade den Ball."]]},
+  sentences:[["Our team wins the match.","Unsere Mannschaft gewinnt das Spiel."],["Look, Ben is running!","Schau, Ben rennt gerade!"],["I play basketball every Friday.","Ich spiele jeden Freitag Basketball."],["The coach is very nice.","Der Trainer ist sehr nett."],["She is throwing the ball.","Sie wirft gerade den Ball."]]},
+ {title:"Last weekend", de:"Letztes Wochenende (Vergangenheit)", icon:"⏪",
+  words:[["yesterday","gestern","⏮️"],["last weekend","letztes Wochenende","⏪"],["ago","vor (zeitlich)","⌛"],["was","war (ich / er / sie / es)","📜"],["were","waren / warst","📜"],
+         ["went","ging / fuhr","🚶‍♀️"],["had","hatte","🤲"],["saw","sah","👀"],["played","spielte","🎲"],["watched","schaute an","👁️"],
+         ["visited","besuchte","🚪"],["came","kam","🛬"],["ate","aß","🍴"],["made","machte","🛠️"],["got","bekam","📦"]],
+  grammar:{title:"Simple Past – die Vergangenheit", rule:"Regelmäßige Verben bekommen -ed: play → played, visit → visited. Unregelmäßige lernst du auswendig: go → went, have → had, see → saw.",
+    ex:[["Yesterday I played tennis.","Gestern spielte ich Tennis."],["We went to the beach.","Wir gingen an den Strand."],["It was a great day.","Es war ein toller Tag."]]},
+  sentences:[["Yesterday I played football.","Gestern spielte ich Fußball."],["We went to the beach last weekend.","Wir gingen letztes Wochenende an den Strand."],["Li visited her grandma.","Li besuchte ihre Oma."],["It was a great day.","Es war ein toller Tag."],["I saw a film two days ago.","Ich sah vor zwei Tagen einen Film."]]},
+ {title:"Shopping", de:"Einkaufen", icon:"🛍️",
+  words:[["money","das Geld","💰"],["pound","das Pfund (Geld)","💷"],["penny","der Penny","🪙"],["price","der Preis","🏷️"],["buy","kaufen","🛒"],
+         ["cheap","billig","⬇️"],["expensive","teuer","💎"],["market","der Markt","🧺"],["supermarket","der Supermarkt","🏬"],["clothes","die Kleidung","👚"],
+         ["toy","das Spielzeug","🧸"],["comic","das Comic-Heft","💬"],["How much is it?","Wie viel kostet das?","💶"],["Can I help you?","Kann ich Ihnen helfen?","🙋‍♀️"],["Here you are.","Bitte schön. (beim Geben)","🫴"]],
+  grammar:{title:"this – these und How much?", rule:"this = dieser/diese/dieses (eins), these = diese (mehrere). How much …? = Wie viel …? How many …? = Wie viele …?",
+    ex:[["How much is this toy?","Wie viel kostet dieses Spielzeug?"],["These sweets are cheap.","Diese Süßigkeiten sind billig."],["How many comics have you got?","Wie viele Comics hast du?"]]},
+  sentences:[["How much is the comic?","Wie viel kostet das Comic-Heft?"],["It's two pounds.","Es kostet zwei Pfund."],["This T-shirt is very expensive.","Dieses T-Shirt ist sehr teuer."],["Can I help you?","Kann ich Ihnen helfen?"],["I want to buy a present.","Ich möchte ein Geschenk kaufen."]]},
+ {title:"My body", de:"Mein Körper", icon:"🧍",
+  words:[["head","der Kopf","🙆"],["hair","die Haare","💇"],["eye","das Auge","👁️"],["ear","das Ohr","👂"],["nose","die Nase","👃"],
+         ["mouth","der Mund","👄"],["tooth","der Zahn","🦷"],["arm","der Arm","💪"],["hand","die Hand","✋"],["finger","der Finger","☝️"],
+         ["leg","das Bein","🦵"],["foot","der Fuß","🦶"],["ill","krank","🤒"],["doctor","der Arzt / die Ärztin","🩺"],["tired","müde","🥱"]],
+  grammar:{title:"Besondere Mehrzahl", rule:"Manche Wörter haben eine eigene Mehrzahl: tooth → teeth, foot → feet, child → children, man → men, woman → women, mouse → mice.",
+    ex:[["one tooth – two teeth","ein Zahn – zwei Zähne"],["one foot – two feet","ein Fuß – zwei Füße"],["one child – three children","ein Kind – drei Kinder"]]},
+  sentences:[["I have got two eyes.","Ich habe zwei Augen."],["He has got brown hair.","Er hat braune Haare."],["I am ill today.","Ich bin heute krank."],["Brush your teeth!","Putz deine Zähne!"],["My feet are cold.","Meine Füße sind kalt."]]},
+ {title:"Describing things", de:"Dinge und Leute beschreiben", icon:"🔍",
+  words:[["big","groß","🏔️"],["small","klein","🐜"],["old","alt","🏚️"],["new","neu","✨"],["young","jung","🐣"],
+         ["happy","glücklich","😄"],["sad","traurig","😢"],["funny","lustig","🤡"],["nice","nett / schön","😊"],["great","toll","🤩"],
+         ["tall","groß (Person)","🦒"],["long","lang","🐍"],["short","kurz","✂️"],["fast","schnell","🐆"],["slow","langsam","🐌"]],
+  grammar:{title:"Steigern: bigger, the biggest", rule:"Kurze Wörter bekommen -er und -est: fast → faster → the fastest. big → bigger → the biggest. Vergleich mit than: taller than me = größer als ich.",
+    ex:[["A horse is faster than a dog.","Ein Pferd ist schneller als ein Hund."],["My brother is taller than me.","Mein Bruder ist größer als ich."],["The elephant is the biggest.","Der Elefant ist der größte."]]},
+  sentences:[["The elephant is very big.","Der Elefant ist sehr groß."],["My brother is taller than me.","Mein Bruder ist größer als ich."],["The film is funny.","Der Film ist lustig."],["I am happy today.","Ich bin heute glücklich."],["The mouse is small.","Die Maus ist klein."]]}
+];
+
+/* ---------- Lektionen bauen: je 5 neue Wörter + Etappen-Test ---------- */
+const LESSONS = [];
+UNITS.forEach((u,ui)=>{
+  const n = Math.ceil(u.words.length/5);
+  for(let i=0;i<n;i++) LESSONS.push({id:`u${ui+1}l${i+1}`, unit:ui, idx:i, type:"learn", words:u.words.slice(i*5,i*5+5).map(w=>w[0])});
+  LESSONS.push({id:`u${ui+1}t`, unit:ui, idx:n, type:"test", words:u.words.map(w=>w[0])});
+});
+/* Aussprache-Hilfe in deutschen Buchstaben: ä = offenes e, th = Zunge zwischen die Zähne, ss = scharfes s, aa/ii/uu/oo = lang */
+const PRON = {
+ "hello":"hälou","goodbye":"gudbai","yes":"jäs","no":"nou","please":"pliis","thank you":"thänk ju","sorry":"ssorri","name":"neim","friend":"fränd","boy":"beu",
+ "girl":"gööl","good morning":"gud mooning","How are you?":"hau aa ju","fine":"fain","What's your name?":"wotts joo neim",
+ "one":"wann","two":"tuu","three":"thrii","four":"foo","five":"faiw","six":"ssiks","seven":"ssäwn","eight":"eit","nine":"nain","ten":"tänn",
+ "red":"rädd","blue":"bluu","green":"griin","yellow":"jälou","black":"bläck","white":"wait","orange":"orindsch","brown":"braun","purple":"pöpl","pink":"pink",
+ "school":"skuul","teacher":"tiitscha","pupil":"pjuupl","classroom":"klaasruum","book":"buk","pen":"pänn","pencil":"pännsl","ruler":"ruula","rubber":"rabba","schoolbag":"skuulbäg",
+ "pencil case":"pännsl keis","board":"bood","chair":"tschea","homework":"houmwöök","lesson":"lässn",
+ "family":"fämili","mum":"mamm","dad":"dädd","mother":"madha","father":"faadha","sister":"ssista","brother":"bradha","grandma":"gränmaa","grandpa":"gränpaa","parents":"pearents",
+ "baby":"beibi","aunt":"aant","uncle":"ankl","cousin":"kasn","pet":"pätt",
+ "Monday":"mandei","Tuesday":"tjuusdei","Wednesday":"wänsdei","Thursday":"thöösdei","Friday":"fraidei","Saturday":"ssätadei","Sunday":"ssandei","today":"tudei","tomorrow":"tumorrou","week":"wiik",
+ "weekend":"wiikänd","morning":"mooning","afternoon":"aaftanuun","evening":"iiwning","o'clock":"oklock",
+ "breakfast":"bräkfast","lunch":"lantsch","dinner":"dinna","bread":"brädd","milk":"milk","water":"woota","juice":"dschuus","apple":"äpl","banana":"banaana","cheese":"tschiis",
+ "egg":"ägg","sandwich":"ssänwitsch","chips":"tschips","tea":"tii","hungry":"hangri",
+ "play football":"plei futbool","play ice hockey":"plei ais hocki","swim":"swimm","dance":"daans","sing":"ssing","read":"riid","ride a bike":"raid e baik","paint":"peint","listen to music":"lissn tu mjuusik","watch TV":"wotsch tii wii",
+ "play the guitar":"plei dhe gitaa","skate":"skeit","draw":"droo","cook":"kuk","play computer games":"plei kompjuuta geims",
+ "house":"haus","flat":"flätt","room":"ruum","bedroom":"bäddruum","kitchen":"kitschn","bathroom":"baathruum","living room":"liwing ruum","garden":"gaadn","bed":"bädd","table":"teibl",
+ "door":"doo","window":"windou","wardrobe":"woodroub","lamp":"lämp","toilet":"teulet",
+ "dog":"dogg","cat":"kätt","horse":"hoos","rabbit":"räbbit","bird":"bööd","fish":"fisch","mouse":"maus","cow":"kau","pig":"pigg","sheep":"schiip",
+ "duck":"dack","tiger":"taiga","lion":"laien","elephant":"älifant","monkey":"manki",
+ "T-shirt":"tii schööt","jeans":"dschiins","dress":"dräss","shoes":"schuus","jacket":"dschäkit","hat":"hätt","cap":"käpp","scarf":"skaaf","socks":"ssocks","sunny":"ssanni",
+ "rainy":"reini","cold":"kould","hot":"hott","snow":"snou","windy":"windi",
+ "town":"taun","city":"ssiti","sea":"ssii","beach":"biitsch","harbour":"haaba","shop":"schopp","park":"paak","street":"striit","bus stop":"bass stopp","station":"steischn",
+ "library":"laibrari","cinema":"ssinema","sports centre":"spoots ssänta","swimming pool":"swimming puul","café":"käfei",
+ "English":"ingglisch","German":"dschööman","maths":"mäths","art":"aat","music":"mjuusik","PE":"pii ii","science":"ssaiens","history":"histri","geography":"dschiografi","break":"breik",
+ "timetable":"taimteibl","canteen":"käntiin","club":"klabb","uniform":"juunifoom","computer":"kompjuuta",
+ "get up":"gätt app","wash":"wosch","brush my teeth":"brasch mai tiith","get dressed":"gätt dräst","go to school":"gou tu skuul","come home":"kamm houm","do my homework":"du mai houmwöök","have dinner":"häw dinna","go to bed":"gou tu bädd","always":"oolweis",
+ "usually":"juuschuali","often":"offn","sometimes":"ssamtaims","never":"näwa","early":"ööli",
+ "January":"dschänjuari","February":"fäbruari","March":"maatsch","April":"eiprl","May":"mei","June":"dschuun","July":"dschulai","August":"oogast","September":"ssäptämba","October":"oktouba",
+ "November":"nowämba","December":"dissämba","spring":"spring","summer":"ssamma","autumn":"ootam","winter":"winta","year":"jia","month":"manth","date":"deit","season":"ssiisn",
+ "birthday":"böödei","party":"paati","present":"präsnt","cake":"keik","candle":"kändl","card":"kaad","invitation":"inwiteischn","balloon":"baluun","guest":"gäst","game":"geim",
+ "sweets":"swiits","pizza":"piitsa","Happy birthday!":"häppi böödei","celebrate":"ssälibreit","invite":"inwait",
+ "team":"tiim","match":"mätsch","goal":"goul","win":"winn","lose":"luus","ball":"bool","tennis":"tännis","basketball":"baaskitbool","volleyball":"wollibool","gym":"dschimm",
+ "coach":"koutsch","player":"pleia","run":"rann","jump":"dschamp","throw":"throu",
+ "yesterday":"jästadei","last weekend":"laast wiikänd","ago":"egou","was":"wos","were":"wöö","went":"wänt","had":"hädd","saw":"ssoo","played":"pleid","watched":"wotscht",
+ "visited":"wisitid","came":"keim","ate":"eit","made":"meid","got":"gott",
+ "money":"manni","pound":"paund","penny":"päni","price":"prais","buy":"bai","cheap":"tschiip","expensive":"ikspänsiw","market":"maakit","supermarket":"ssuupamaakit","clothes":"kloudhs",
+ "toy":"teu","comic":"komik","How much is it?":"hau matsch is it","Can I help you?":"kän ai hälp ju","Here you are.":"hia ju aa",
+ "head":"hädd","hair":"hea","eye":"ai","ear":"ia","nose":"nous","mouth":"mauth","tooth":"tuuth","arm":"aam","hand":"händ","finger":"fingga",
+ "leg":"lägg","foot":"futt","ill":"ill","doctor":"dokta","tired":"taiad",
+ "big":"bigg","small":"smool","old":"ould","new":"njuu","young":"jang","happy":"häppi","sad":"ssädd","funny":"fanni","nice":"nais","great":"greit",
+ "tall":"tool","long":"long","short":"schoot","fast":"faast","slow":"slou"
+};
+const WORD = {}; UNITS.forEach((u,ui)=>u.words.forEach(w=>WORD[w[0]]={en:w[0],de:w[1],pic:w[2],pron:PRON[w[0]]||"",unit:ui}));
+const thTip = w=>/th/i.test(w.en)?`<div class="muted" style="text-align:center;font-size:14px">th: Zungenspitze leicht zwischen die Zähne</div>`:"";
+const wordBox = w=>`<div class="wbox"><div class="e">${w.pic}</div><div><b>${esc(w.en)}</b><span class="pr">🗣️ [${esc(w.pron)}]</span><span>${esc(w.de)}</span></div><button class="mini" data-say="${esc(w.en)}" aria-label="Anhören">🔊</button></div>`;
+
+/* ---------- Hilfsfunktionen ---------- */
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle = a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick = a=>a[Math.floor(Math.random()*a.length)];
+const today = ()=>{const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000);};
+const dayDate = n=>new Date(n*86400000+new Date().getTimezoneOffset()*60000);
+const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const INTERVAL = [0,1,2,4,7,14,30];
+const norm = s=>s.toLowerCase().replace(/[.,!?]/g,"").replace(/\s+/g," ").trim();
+
+/* ---------- Speicher: Gerät (immer) + Claude-Konto (wenn verfügbar) ---------- */
+const KEY = "english-lernen-v1";
+function blank(){return {name:"",done:{},words:{},days:[],streak:0,lastDay:null,history:[],updated:0};}
+function normalize(s){const b=blank();s=Object.assign(b,s||{});if(!Array.isArray(s.days))s.days=[];if(!Array.isArray(s.history))s.history=[];return s;}
+let state = blank();
+try{ const raw=localStorage.getItem(KEY); if(raw) state=normalize(JSON.parse(raw)); }catch(e){}
+let cloud = {db:null, uid:null, status:"device", chain:Promise.resolve()};
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function pushCloud(){
+  if(!cloud.db) return;
+  const data = JSON.parse(JSON.stringify(state));
+  cloud.chain = cloud.chain.then(()=>cloud.db.doc(`data/users/${cloud.uid}/progress`).set(data)).catch(()=>{});
+}
+function save(){ state.updated=Date.now(); saveLocal(); pushCloud(); }
+async function initCloud(){
+  try{
+    if(!window.claude || !window.claude.use) return;
+    const [db,user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if(!db || !user) return;
+    const uid = await user.id(); if(!uid) return;
+    cloud.db=db; cloud.uid=uid;
+    const snap = await Promise.race([db.doc(`data/users/${uid}/progress`).get(), new Promise((_,r)=>setTimeout(()=>r("timeout"),10000))]);
+    cloud.status="cloud";
+    if(snap && snap.exists){
+      const r = snap.data()||{};
+      if((r.updated||0) > (state.updated||0)){ state = normalize(JSON.parse(JSON.stringify(r))); saveLocal(); }
+      else if((state.updated||0) > (r.updated||0)) pushCloud();
+    } else if(state.updated) pushCloud();
+    if(view!=="lesson") render();
+  }catch(e){ cloud.status="device"; }
+}
+
+/* ---------- Aussprache (Britisches Englisch) ---------- */
+/* Frauenstimme bevorzugen, britisch, möglichst "Erweitert/Premium"-Qualität */
+const FEMALE = /Serena|Kate|Stephanie|Martha|Moira|Fiona|Tessa|Karen|Samantha|Susan|Hazel|Libby|Sonia|Maisie|Female|Zira|Catherine|Allison|Ava|Nicky|Kathy|Victoria/i;
+const MALE = /Daniel|Arthur|Oliver|Malcolm|Male|George|Ryan|Thomas|Fred|Alex|Aaron|Gordon|Rishi|Ralph|Albert|Junior/i;
+let voice=null, voices=[];
+function voiceScore(v){
+  let s=0;
+  if(/en[-_]GB/i.test(v.lang)) s+=40; else if(/en[-_](IE|AU|US)/i.test(v.lang)) s+=20; else if(/^en/i.test(v.lang)) s+=10; else return -1;
+  if(FEMALE.test(v.name)) s+=30; if(MALE.test(v.name) && !/Female/i.test(v.name)) s-=40;
+  if(/premium|enhanced|erweitert|natural|neural|online/i.test(v.name+" "+v.voiceURI)) s+=25;
+  if(/Google UK English Female/i.test(v.name)) s+=20;
+  if(/Grandma|Grandpa|Bells|Bubbles|Jester|Whisper|Zarvox|Trinoids|Organ|Cellos|Bad News|Good News|Albert|Boing|Superstar|Wobble|Bahh/i.test(v.name)) s-=100;
+  return s;
+}
+function pickVoice(){
+  try{
+    voices = speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));
+    const chosen = state.voice && voices.find(v=>v.voiceURI===state.voice);
+    voice = chosen || voices[0] || null;
+  }catch(e){}
+}
+try{ pickVoice(); speechSynthesis.onvoiceschanged = ()=>{ pickVoice(); if(view==="parents") renderParents(); }; }catch(e){}
+function say(text, slow){
+  try{
+    if(!voice) pickVoice();
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.replace(/\bTV\b/g,"T V"));
+    u.lang = voice?voice.lang:"en-GB"; if(voice) u.voice=voice;
+    u.rate = slow?0.55:0.8; u.pitch = 1.05; u.volume = 1;
+    setTimeout(()=>{ try{ speechSynthesis.speak(u); }catch(e){} }, 80);
+  }catch(e){}
+}
+let actx=null;
+function tone(ok){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const notes = ok?[660,880]:[300,220];
+    notes.forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type="sine";o.frequency.value=f;
+      const t=actx.currentTime+i*0.11;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.18,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+      o.connect(g).connect(actx.destination);o.start(t);o.stop(t+0.2);});
+  }catch(e){}
+}
+
+/* ---------- Fortschritt ---------- */
+function currentLesson(){ return LESSONS.find(l=>!state.done[l.id]) || null; }
+function lessonIndex(id){ return LESSONS.findIndex(l=>l.id===id); }
+function unlocked(l){ const c=currentLesson(); return state.done[l.id] || (c && c.id===l.id); }
+function learnedWords(){ return Object.keys(state.words).filter(k=>WORD[k]); }
+function dueWords(exclude){ const t=today(); return learnedWords().filter(k=>state.words[k].due<=t && !(exclude||[]).includes(k)).sort((a,b)=>state.words[a].due-state.words[b].due); }
+/* Wiederholungs-Auswahl: erst fällige Wörter, dann die schwächsten und am längsten nicht geübten */
+function reviewSet(exclude, n){
+  const ex=exclude||[]; const due=dueWords(ex);
+  const rest=learnedWords().filter(k=>!ex.includes(k)&&!due.includes(k))
+    .sort((a,b)=>(state.words[a].box-state.words[b].box)||((state.words[a].last||0)-(state.words[b].last||0)));
+  return due.concat(rest).slice(0,n);
+}
+function didToday(){ return state.lastDay===today(); }
+function streakNow(){ const t=today(); return (state.lastDay===t||state.lastDay===t-1)?state.streak:0; }
+
+/* ============================================================
+   ANSICHTEN
+   ============================================================ */
+let view="home";
+function render(){
+  if(view==="home") renderHome();
+  else if(view==="words") renderWords();
+  else if(view==="parents") renderParents();
+  window.scrollTo(0,0);
+}
+function topBar(back){
+  const s=streakNow();
+  return `<div class="top">
+    ${back?`<button class="chip" data-go="home" aria-label="Zurück">← Zurück</button>`:`<div class="brand"><svg class="flag" viewBox="0 0 60 30" aria-hidden="true"><clipPath id="ukS"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="ukT"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><g clip-path="url(#ukS)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ukT)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg>English lernen</div>`}
+    <span class="chip ${s?"hot":""}" title="Tage in Folge">🔥 ${s} ${s===1?"Tag":"Tage"}</span>
+  </div>`;
+}
+function weekStrip(){
+  const t=today(); let h="";
+  for(let i=6;i>=0;i--){ const d=t-i; const on=state.days.includes(d);
+    h+=`<div><i class="${on?"on":""} ${d===t?"now":""}">${on?"⭐":""}</i>${WD[dayDate(d).getDay()]}</div>`; }
+  return `<div class="week">${h}</div>`;
+}
+function renderHome(){
+  const cur=currentLesson(), done=didToday();
+  const u = cur?UNITS[cur.unit]:null;
+  const due = learnedWords().length>=4 ? reviewSet(cur?cur.words:[],10).length : 0;
+  let todayBox;
+  if(!cur){
+    todayBox=`<div class="today"><span class="k">Alles geschafft</span><span class="t">Alle ${UNITS.length} Etappen fertig! 🏆</span><span class="m">Wiederhole jeden Tag deine Wörter, damit du sie nicht vergisst.</span></div>
+      <button class="btn sun mt" data-act="review">Wörter wiederholen</button>`;
+  } else if(done){
+    todayBox=`<div class="today"><span class="k">Heute geschafft ⭐</span><span class="t">Super gemacht${state.name?", "+esc(state.name):""}!</span><span class="m">Morgen geht es weiter mit: ${esc(u.title)}, ${cur.type==="test"?"Etappen-Test":"Teil "+(cur.idx+1)}</span></div>
+      <div class="row mt">${due?`<button class="btn sun" data-act="review">Extra: wiederholen</button>`:""}<button class="btn ghost" data-act="start">Noch eine Lektion</button></div>`;
+  } else {
+    todayBox=`<div class="today"><span class="k">Heute · Etappe ${cur.unit+1}</span><span class="t">${u.icon} ${esc(u.title)} · ${cur.type==="test"?"Etappen-Test":"Teil "+(cur.idx+1)}</span>
+      <span class="m">${cur.type==="test"?"Zeig, was du in dieser Etappe gelernt hast.":"5 neue Wörter"}${due?` + ${due} Wörter wiederholen`:""} · ca. 10–15 Minuten</span></div>
+      <button class="btn sun mt" data-act="start">Lektion starten</button>
+      ${due?`<button class="btn ghost mt" data-act="review">Nur wiederholen</button>`:""}`;
+  }
+  const nameBox = state.name ? "" : `<div class="card"><h2 style="font-size:21px">Wie heißt du?</h2><p class="muted" style="margin:4px 0 0">Dann kann dich die App mit deinem Namen begrüßen.</p>
+     <form class="field" id="nameForm"><input id="nameIn" maxlength="20" placeholder="Dein Vorname" autocomplete="off"><button class="btn" type="submit">OK</button></form></div>`;
+  const path = UNITS.map((un,ui)=>{
+    const ls=LESSONS.filter(l=>l.unit===ui);
+    const allDone=ls.every(l=>state.done[l.id]);
+    const isCur=cur&&cur.unit===ui;
+    const locked=!allDone&&!isCur;
+    const chips=ls.map(l=>{const d=state.done[l.id], c=cur&&cur.id===l.id;
+      return `<button class="ls ${d?"done":c?"cur":"lock"}" data-lesson="${l.id}" ${(!d&&!c)?"disabled":""} aria-label="${l.type==="test"?"Test":"Teil "+(l.idx+1)}">${l.type==="test"?"Test":(l.idx+1)}${d?" "+"★".repeat(d.stars):""}</button>`;}).join("");
+    return `<div class="stage ${allDone?"done":isCur?"cur":"locked"}">
+      <div class="num">${allDone?"✅":locked?"🔒":un.icon}</div>
+      <div><h3>${ui+1}. ${esc(un.title)}</h3><div class="de">${esc(un.de)}</div><div class="lessons">${chips}</div></div></div>`;
+  }).join("");
+  $("#app").innerHTML = `${topBar()}
+    <section class="card hero"><h1>Hi${state.name?" "+esc(state.name):""}! 👋</h1><div class="sub">Jeden Tag ein kleines Stück Englisch.</div>${todayBox}</section>
+    ${nameBox}
+    <section class="card"><div class="sec-title"><h2>Diese Woche</h2><span>${state.days.length} Lerntage insgesamt</span></div>${weekStrip()}</section>
+    <section class="card"><div class="sec-title"><h2>Deine Etappen</h2><span>${Object.keys(state.done).length} / ${LESSONS.length} Lektionen</span></div><div class="path">${path}</div></section>
+    <div class="row"><button class="btn ghost" data-go="words">📚 Meine Wörter (${learnedWords().length})</button><button class="btn ghost" data-go="parents">🔒 Eltern</button></div>`;
+  const f=$("#nameForm"); if(f) f.addEventListener("submit",e=>{e.preventDefault();const v=$("#nameIn").value.trim();if(v){state.name=v;save();render();}});
+}
+function renderWords(){
+  const lw=learnedWords();
+  let body = lw.length? UNITS.map((u,ui)=>{
+    const ws=u.words.filter(w=>state.words[w[0]]); if(!ws.length) return "";
+    return `<section class="card"><div class="sec-title"><h2>${u.icon} ${esc(u.title)}</h2><span>${ws.length} Wörter</span></div><div class="wl">${
+      ws.map(w=>{const b=state.words[w[0]].box;return `<div class="w"><div class="e">${w[2]}</div><div><b>${esc(w[0])}</b><span class="pr">🗣️ [${esc(PRON[w[0]]||"")}]</span> <span>= ${esc(w[1])}</span>
+        <div class="lvl" title="Wie gut sitzt das Wort">${[1,2,3,4,5].map(i=>`<i class="${b>=i?"on":""}"></i>`).join("")}</div></div>
+        <button class="mini" data-say="${esc(w[0])}" aria-label="Anhören">🔊</button></div>`;}).join("")}</div></section>`;}).join("")
+    : `<section class="card"><p style="margin:0">Hier erscheinen alle Wörter, die du gelernt hast. Starte deine erste Lektion!</p></section>`;
+  $("#app").innerHTML = `${topBar(true)}<h1 style="font-size:28px">Meine Wörter</h1><p class="muted" style="margin:-8px 0 0">Tippe auf 🔊 zum Anhören. Die grünen Punkte zeigen, wie gut ein Wort schon sitzt.</p>${body}`;
+}
+function renderParents(){
+  const h=state.history.slice(-30).reverse();
+  const last7=state.history.filter(x=>x.day>today()-7);
+  const acc = last7.length? Math.round(100*last7.reduce((a,x)=>a+x.correct,0)/Math.max(1,last7.reduce((a,x)=>a+x.total,0))) : null;
+  const mins = Math.round(last7.reduce((a,x)=>a+(x.minutes||0),0));
+  const cur=currentLesson();
+  $("#app").innerHTML = `${topBar(true)}<h1 style="font-size:28px">Eltern-Bereich</h1>
+    <section class="card"><div class="stats">
+      <div class="stat"><b>${state.days.length}</b><span>Lerntage</span></div>
+      <div class="stat"><b>${learnedWords().length}</b><span>Wörter</span></div>
+      <div class="stat"><b>${streakNow()}</b><span>Serie</span></div>
+      <div class="stat"><b>${acc===null?"–":acc+"%"}</b><span>richtig (7 Tage)</span></div>
+      <div class="stat"><b>${mins}</b><span>Minuten (7 Tage)</span></div>
+      <div class="stat"><b>${Object.keys(state.done).length}/${LESSONS.length}</b><span>Lektionen</span></div>
+    </div>
+    <p class="muted" style="margin:14px 0 0">Aktuell: ${cur?`Etappe ${cur.unit+1} „${esc(UNITS[cur.unit].title)}“, ${cur.type==="test"?"Etappen-Test":"Teil "+(cur.idx+1)}`:"alle Etappen abgeschlossen"}.</p></section>
+    <section class="card"><div class="sec-title"><h2>Letzte Lektionen</h2></div>
+      ${h.length?`<table class="tbl"><thead><tr><th>Datum</th><th>Lektion</th><th style="text-align:right">Richtig</th><th style="text-align:right">Min.</th></tr></thead><tbody>${
+        h.map(x=>`<tr><td>${dayDate(x.day).toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"})}</td><td>${esc(x.label)}</td><td class="n">${x.correct}/${x.total}</td><td class="n">${Math.round(x.minutes||0)}</td></tr>`).join("")}</tbody></table>`
+       :`<p class="muted" style="margin:0">Noch keine Lektion gemacht.</p>`}</section>
+    <section class="card"><div class="sec-title"><h2>So funktioniert die App</h2></div>
+      <p style="margin:0 0 8px">${UNITS.length} Etappen mit den Themen der 5. Klasse, angelehnt an Go Ahead 5 (Realschule Bayern): Begrüßung, Zahlen und Farben, Schule, Familie, Uhrzeit, Essen, Hobbys, Zuhause, Tiere, Kleidung und Wetter, Stadt, Schulfächer, Tagesablauf, Monate, Geburtstag, Sport, Vergangenheit, Einkaufen, Körper und Beschreiben. Die Grammatik folgt der Reihenfolge im Buch. Jede Lektion bringt 5 neue Wörter, am Ende jeder Etappe kommt ein Test.</p>
+      <p style="margin:0">Gelernte Wörter kommen nach 1, 2, 4, 7, 14 und 30 Tagen automatisch zur Wiederholung (Karteikasten-Prinzip). Falsche Wörter fangen wieder vorne an. Zusätzlich beginnt jede Lektion mit 4 alten Wörtern zum Aufwärmen und endet mit bis zu 6 weiteren Wiederholungen, bevorzugt mit den Wörtern, die noch am wackeligsten sitzen. Mit „Nur wiederholen“ kann sie jederzeit extra üben.</p></section>
+    <section class="card"><div class="sec-title"><h2>Einstellungen</h2></div>
+      <form class="field" id="nameForm" style="margin-top:0"><input id="nameIn" maxlength="20" value="${esc(state.name)}" placeholder="Name des Kindes" aria-label="Name"><button class="btn" type="submit">Speichern</button></form>
+      <h3 class="mt" style="font-size:18px">Vorlese-Stimme</h3>
+      ${voices.length?`<select id="voiceSel" class="sel" aria-label="Stimme wählen">${voices.map(v=>`<option value="${esc(v.voiceURI)}" ${voice&&v.voiceURI===voice.voiceURI?"selected":""}>${esc(v.name)} (${esc(v.lang)})${FEMALE.test(v.name)?" · Frau":""}</option>`).join("")}</select>`
+        :`<p class="muted" style="margin:6px 0 0">Auf diesem Gerät wurde noch keine englische Stimme gefunden.</p>`}
+      <div class="row mt"><button class="btn ghost" data-say="Hello! How are you? My name is Lucy. I have got a dog.">🔊 Stimme testen</button></div>
+      <div class="hint mt" style="text-align:left;font-weight:600">Tipp für eine viel deutlichere Stimme auf iPad/iPhone: <b>Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Englisch → Englisch (Großbritannien)</b> und dort eine Frauenstimme wie <b>Serena</b> oder <b>Kate</b> in der Version „Premium“ oder „Erweitert“ laden. Danach hier auswählen.</div>
+      <p class="muted" style="margin:12px 0 0">${cloud.status==="cloud"?"Der Fortschritt wird in deinem Claude-Konto gespeichert und ist auf jedem Gerät mit diesem Konto da.":"Der Fortschritt wird auf diesem Gerät gespeichert. Am besten immer auf demselben Gerät lernen."}</p>
+      <button class="linkbtn danger mt" data-act="reset">Fortschritt komplett zurücksetzen</button></section>`;
+  $("#nameForm").addEventListener("submit",e=>{e.preventDefault();state.name=$("#nameIn").value.trim();save();render();});
+  const vs=$("#voiceSel"); if(vs) vs.addEventListener("change",()=>{state.voice=vs.value;save();pickVoice();say("Hello! My name is Lucy.");});
+}
+function confirmBox(text, yes, onYes){
+  const d=document.createElement("div"); d.className="dialog";
+  d.innerHTML=`<div class="card stack"><h2 style="font-size:22px">${text}</h2><div class="row"><button class="btn ghost" id="dNo">Abbrechen</button><button class="btn bad" id="dYes">${yes}</button></div></div>`;
+  document.body.appendChild(d);
+  d.querySelector("#dNo").onclick=()=>d.remove();
+  d.querySelector("#dYes").onclick=()=>{d.remove();onYes();};
+}
+
+/* ---------- PIN für den Eltern-Bereich ---------- */
+const PARENT_PIN="8988"; let parentsOpen=false;
+function pinBox(){
+  const d=document.createElement("div"); d.className="dialog"; let code="";
+  const keys=["1","2","3","4","5","6","7","8","9","","0","⌫"];
+  d.innerHTML=`<div class="card stack" style="max-width:340px"><h2 style="font-size:22px;text-align:center">Eltern-Bereich</h2>
+    <p class="muted" style="margin:0;text-align:center" id="pinMsg">Bitte Passwort eingeben</p>
+    <div class="pindots" id="pinDots"></div>
+    <div class="pad">${keys.map(k=>k?`<button class="pk" data-pk="${k}" aria-label="${k==="⌫"?"Löschen":k}">${k}</button>`:`<span></span>`).join("")}</div>
+    <button class="btn ghost" data-pk="x">Abbrechen</button></div>`;
+  document.body.appendChild(d);
+  const dots=()=>{d.querySelector("#pinDots").innerHTML=[0,1,2,3].map(i=>`<i class="${i<code.length?"on":""}"></i>`).join("");};
+  dots();
+  d.addEventListener("click",e=>{
+    const k=e.target.closest("[data-pk]"); if(!k) return; e.stopPropagation();
+    const v=k.dataset.pk;
+    if(v==="x"){ d.remove(); return; }
+    if(v==="⌫"){ code=code.slice(0,-1); dots(); return; }
+    if(code.length<4){ code+=v; dots(); }
+    if(code.length===4){
+      if(code===PARENT_PIN){ d.remove(); parentsOpen=true; view="parents"; render(); }
+      else { const box=d.querySelector(".card"); box.classList.add("shake"); d.querySelector("#pinMsg").textContent="Falsches Passwort, nochmal versuchen";
+        setTimeout(()=>{box.classList.remove("shake"); code=""; dots();},400); }
+    }
+  });
+}
+
+/* ============================================================
+   LEKTION
+   ============================================================ */
+let L=null;
+function poolFor(unit){ return Object.values(WORD).filter(w=>w.unit<=Math.max(unit,1)); }
+function distractors(w, field, n){
+  const pool = shuffle(poolFor(w.unit).filter(x=>x.en!==w.en && x[field]!==w[field]));
+  const same = pool.filter(x=>x.unit===w.unit), other=pool.filter(x=>x.unit!==w.unit);
+  return [...same,...other].slice(0,n);
+}
+const spellable = en=>/^[A-Za-z]{2,10}$/.test(en);
+function exFor(en, types){
+  const t = pick(types.filter(x=>x!=="spell"||spellable(en)));
+  return {type:t, en};
+}
+function buildLesson(lesson, mode){
+  const steps=[]; const u=lesson?UNITS[lesson.unit]:null;
+  if(mode==="review"){
+    const ws=reviewSet([],15);
+    steps.push({type:"intro", title:"Wiederholen", text:`${ws.length} Wörter, die du schon kennst. Los geht's!`, pic:"🔁"});
+    if(ws.length>=4) steps.push({type:"match", words:shuffle(ws).slice(0,5)});
+    shuffle(ws).forEach(en=>steps.push(exFor(en,["listen","de2en","en2de","spell"])));
+    return {steps, newWords:[], reviewWords:ws, label:"Wiederholung"};
+  }
+  const nw = lesson.words;
+  const rvAll = reviewSet(nw, 10);
+  const warm = rvAll.slice(0,4), rv = rvAll.slice(4);
+  if(warm.length){
+    steps.push({type:"intro", title:"Aufwärmen", text:`Erst ${warm.length} Wörter von früher – weißt du sie noch?`, pic:"🔁"});
+    warm.forEach(en=>steps.push(exFor(en,["listen","de2en","en2de"])));
+  }
+  if(lesson.type==="learn"){
+    if(lesson.idx===0) steps.push({type:"intro", title:`Etappe ${lesson.unit+1}: ${u.title}`, text:`Neues Thema: ${u.de}. Jetzt lernst du 5 neue Wörter.`, pic:u.icon});
+    else steps.push({type:"intro", title:`${u.title} · Teil ${lesson.idx+1}`, text:"Jetzt kommen 5 neue Wörter. Hör genau hin und sprich laut nach!", pic:u.icon});
+    nw.forEach(en=>steps.push({type:"card", en}));
+    if(lesson.idx===1) steps.push({type:"grammar", unit:lesson.unit});
+    steps.push({type:"match", words:nw});
+    const ex=[]; nw.forEach(en=>{ shuffle(["listen","de2en","en2de"]).slice(0,2).forEach(t=>ex.push({type:t,en})); });
+    steps.push(...shuffle(ex));
+    shuffle(nw.filter(spellable)).slice(0,3).forEach(en=>steps.push({type:"spell",en}));
+    if(lesson.idx>=1) shuffle(u.sentences).slice(0,2).forEach(s=>steps.push({type:"sentence", s}));
+  } else {
+    steps.push({type:"intro", title:`Etappen-Test: ${u.title}`, text:"Jetzt zeigst du, was du kannst! Kein Stress: Fehler darfst du gleich nochmal versuchen.", pic:"🏁"});
+    steps.push({type:"grammar", unit:lesson.unit, recap:true});
+    const ws=shuffle(nw);
+    steps.push({type:"match", words:ws.slice(0,5)});
+    steps.push({type:"match", words:ws.slice(5,10)});
+    ws.slice(0,10).forEach(en=>steps.push(exFor(en,["listen","de2en","en2de"])));
+    shuffle(nw.filter(spellable)).slice(0,3).forEach(en=>steps.push({type:"spell",en}));
+    shuffle(u.sentences).slice(0,3).forEach(s=>steps.push({type:"sentence", s}));
+  }
+  if(rv.length){
+    steps.push({type:"intro", title:"Wiederholung", text:`Noch ${rv.length} Wörter von früher, damit du sie nicht vergisst.`, pic:"🔁"});
+    if(rv.length>=4) steps.push({type:"match", words:rv.slice(0,5)});
+    rv.forEach(en=>steps.push(exFor(en,["listen","de2en","en2de","spell"])));
+  }
+  return {steps, newWords: lesson.type==="learn"?nw:[], reviewWords: (lesson.type==="test"?nw:[]).concat(rvAll),
+    label: lesson.type==="test"?`Etappe ${lesson.unit+1} Test`:`Etappe ${lesson.unit+1} · Teil ${lesson.idx+1}`};
+}
+function startLesson(lesson, mode){
+  const b=buildLesson(lesson, mode);
+  L = {lesson, mode, steps:b.steps, i:0, correct:0, total:0, wrongWords:new Set(), seen:new Set(), newWords:b.newWords, reviewWords:b.reviewWords, label:b.label, start:Date.now(), answered:false};
+  view="lesson"; renderStep();
+}
+function graded(s){ return !["intro","card","grammar"].includes(s.type); }
+function progressPct(){ return Math.round(100*L.i/L.steps.length); }
+function shell(inner, kind){
+  $("#app").innerHTML = `<div class="lesson-top"><button class="x" data-act="quit" aria-label="Lektion beenden">✕</button><div class="bar"><b style="width:${progressPct()}%"></b></div></div>
+    ${kind?`<div class="kind">${kind}</div>`:""}${inner}<div id="fb"></div>`;
+  window.scrollTo(0,0);
+}
+function renderStep(){
+  if(L.i>=L.steps.length) return finishLesson();
+  const s=L.steps[L.i]; L.answered=false; L.sel=null;
+  const w = s.en?WORD[s.en]:null;
+  if(s.type==="intro"){
+    shell(`<div class="card stack" style="text-align:center"><div class="big-emoji">${s.pic}</div><h1 style="font-size:28px">${esc(s.title)}</h1><p style="margin:0" class="muted">${esc(s.text)}</p></div>
+      <button class="btn" data-act="next">Los geht's</button>`);
+  } else if(s.type==="card"){
+    shell(`<div class="card stack"><div class="big-emoji">${w.pic}</div><div class="word-en">${esc(w.en)}</div>
+      <div class="pron-big"><small>So spricht man's</small>[${esc(w.pron)}]</div>${thTip(w)}<div class="word-de">= ${esc(w.de)}</div>
+      <div class="speak"><button class="sbtn" data-say="${esc(w.en)}">🔊 Anhören</button><button class="sbtn" data-slow="${esc(w.en)}">🐢 Langsam</button></div>
+      <div class="hint">Sprich das Wort 3-mal laut nach!</div></div>
+      <button class="btn" data-act="next">Weiter</button>`, "Neues Wort");
+    say(w.en);
+  } else if(s.type==="grammar"){
+    const g=UNITS[s.unit].grammar;
+    shell(`<div class="card grammar"><h2>${esc(g.title)}</h2><div class="rule">${esc(g.rule)}</div>
+      <div class="ex">${g.ex.map(e=>`<button data-say="${esc(e[0].split(" / ")[0].replace(/ – .*/,""))}"><b>🔊 ${esc(e[0])}</b><span>${esc(e[1])}</span></button>`).join("")}</div></div>
+      <button class="btn" data-act="next">Verstanden</button>`, s.recap?"Grammatik zur Erinnerung":"Grammatik-Tipp");
+  } else if(s.type==="listen"){
+    const opts=shuffle([w,...distractors(w,"en",3)]);
+    shell(`<div class="q">Was hörst du?</div><div class="card stack"><div class="speak"><button class="sbtn round" data-say="${esc(w.en)}" aria-label="Nochmal anhören">🔊</button></div>
+      <div class="speak"><button class="sbtn" data-slow="${esc(w.en)}">🐢 Langsam</button></div></div>
+      <div class="opts">${opts.map(o=>`<button class="opt" data-ans="${esc(o.en)}">${esc(o.en)}</button>`).join("")}</div>`, "Hören");
+    say(w.en);
+  } else if(s.type==="de2en"){
+    const opts=shuffle([w,...distractors(w,"en",3)]);
+    shell(`<div class="q">Wie heißt das auf Englisch?</div><div class="card stack"><div class="big-emoji" style="font-size:64px">${w.pic}</div><div class="word-en" style="font-size:30px">${esc(w.de)}</div></div>
+      <div class="opts">${opts.map(o=>`<button class="opt" data-ans="${esc(o.en)}">${esc(o.en)}</button>`).join("")}</div>`, "Übersetzen");
+  } else if(s.type==="en2de"){
+    const opts=shuffle([w,...distractors(w,"de",3)]);
+    shell(`<div class="q">Was bedeutet das?</div><div class="card stack"><div class="word-en">${esc(w.en)}</div><div class="speak"><button class="sbtn" data-say="${esc(w.en)}">🔊 Anhören</button></div></div>
+      <div class="opts">${opts.map(o=>`<button class="opt" data-ans="${esc(o.en)}">${esc(o.de)}</button>`).join("")}</div>`, "Verstehen");
+    say(w.en);
+  } else if(s.type==="match"){
+    const ws=s.words.map(k=>WORD[k]);
+    L.match={left:null,right:null,left_ok:0,miss:0};
+    shell(`<div class="q">Finde die Paare!</div><p class="muted" style="margin:-8px 0 0">Tippe links ein englisches Wort und rechts die deutsche Bedeutung.</p>
+      <div class="match"><div class="col">${shuffle(ws).map(x=>`<button class="opt" data-ml="${esc(x.en)}">${esc(x.en)}</button>`).join("")}</div>
+      <div class="col">${shuffle(ws).map(x=>`<button class="opt" data-mr="${esc(x.en)}">${esc(x.de)}</button>`).join("")}</div></div>`, "Paare");
+  } else if(s.type==="spell"){
+    const letters=w.en.toLowerCase().split("");
+    const extra="abcdefghiklmnoprstuw".split("").filter(c=>!letters.includes(c));
+    L.tiles=shuffle(letters.concat(shuffle(extra).slice(0,2))).map((c,i)=>({c,i,used:false})); L.built=[];
+    shell(`<div class="q">Schreib das Wort!</div><div class="card stack"><div class="big-emoji" style="font-size:60px">${w.pic}</div><div class="word-de">${esc(w.de)}</div>
+      <div class="speak"><button class="sbtn" data-say="${esc(w.en)}">🔊 Anhören</button></div></div>
+      <div class="slots" id="slots"></div><div class="tiles" id="tiles"></div>
+      <button class="btn" data-act="check" id="checkBtn" disabled>Prüfen</button>`, "Buchstabieren");
+    drawTiles();
+  } else if(s.type==="sentence"){
+    const toks=s.s[0].split(" ").map(t=>t.replace(/[.,!?]/g,""));
+    L.tiles=shuffle(toks).map((c,i)=>({c,i,used:false})); L.built=[];
+    shell(`<div class="q">Bau den Satz auf Englisch!</div><div class="card"><div class="word-en" style="font-size:24px">${esc(s.s[1])}</div></div>
+      <div class="slots" id="slots"></div><div class="tiles" id="tiles"></div>
+      <button class="btn" data-act="check" id="checkBtn" disabled>Prüfen</button>`, "Satz-Puzzle");
+    drawTiles();
+  }
+}
+function drawTiles(){
+  $("#tiles").innerHTML = L.tiles.map(t=>`<button class="tile ${t.used?"used":""}" data-tile="${t.i}">${esc(t.c)}</button>`).join("");
+  $("#slots").innerHTML = L.built.length? L.built.map((ti,pos)=>`<button class="tile" data-unt="${pos}">${esc(L.tiles.find(t=>t.i===ti).c)}</button>`).join("") : `<span class="muted">Tippe die Bausteine unten an</span>`;
+  const b=$("#checkBtn"); if(b) b.disabled = !L.built.length;
+}
+function wordOf(s){ return s.en || null; }
+function answer(ok, correctText, sayText){
+  if(L.answered) return; L.answered=true;
+  const s=L.steps[L.i];
+  if(!s.retry){ L.total++; if(ok) L.correct++; }
+  const en=wordOf(s);
+  if(en){ L.seen.add(en); if(!ok) L.wrongWords.add(en); }
+  if(!ok && !s.retry){ L.steps.push(Object.assign({},s,{retry:true})); }
+  tone(ok);
+  if(sayText) say(sayText);
+  const praise=pick(["Richtig! 🎉","Super! ⭐","Klasse! 💪","Genau! 👍","Well done! 🎉","Great! ⭐"]);
+  const wb = en ? wordBox(WORD[en]) : "";
+  $("#fb").innerHTML = `<div class="feedback ${ok?"ok":"no"}"><h3>${ok?praise:"Fast! Nicht schlimm."}</h3>
+    ${ok?"":(en?`<p>Richtig ist:</p>`:`<p>Richtig ist: ${esc(correctText)}</p>`)}${wb}
+    ${ok?"":`<p class="muted">Das kommt am Ende nochmal dran.</p>`}
+    <button class="btn ${ok?"good":"bad"}" data-act="next">Weiter</button></div>`;
+  const ck=$("#checkBtn"); if(ck) ck.remove();
+  $("#fb").scrollIntoView({behavior:"smooth",block:"end"});
+}
+function finishLesson(){
+  const t=today(), mins=(Date.now()-L.start)/60000;
+  const acc = L.total? L.correct/L.total : 1;
+  const stars = acc>=0.9?3:acc>=0.7?2:1;
+  // Karteikasten aktualisieren
+  L.newWords.forEach(en=>{ if(!state.words[en]) state.words[en]={box:1,due:t+1}; });
+  L.reviewWords.forEach(en=>{ const r=state.words[en]||{box:0,due:t};
+    if(L.wrongWords.has(en)) { r.box=1; } else if(L.seen.has(en)) { r.box=Math.min(6,r.box+1); }
+    r.due=t+INTERVAL[r.box]; r.last=t; state.words[en]=r; });
+  L.newWords.forEach(en=>{ if(L.wrongWords.has(en)) state.words[en]={box:1,due:t+1}; state.words[en].last=t; });
+  if(L.lesson && L.mode!=="review"){ const prev=state.done[L.lesson.id]; state.done[L.lesson.id]={stars:Math.max(stars,prev?prev.stars:0), day:t}; }
+  // Tages-Serie
+  if(state.lastDay!==t){ state.streak = (state.lastDay===t-1)? state.streak+1 : 1; state.lastDay=t; }
+  if(!state.days.includes(t)) state.days.push(t);
+  state.history.push({day:t,label:L.label,correct:L.correct,total:L.total,minutes:Math.round(mins*10)/10});
+  if(state.history.length>120) state.history=state.history.slice(-120);
+  save();
+  const unitDone = L.lesson && L.lesson.type==="test";
+  $("#app").innerHTML = `<div class="card stack" style="text-align:center">
+      <div class="big-emoji">${unitDone?"🏆":"🎉"}</div>
+      <h1 style="font-size:30px">${unitDone?"Etappe geschafft!":"Lektion geschafft!"}</h1>
+      <div class="stars" aria-label="${stars} von 3 Sternen">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
+      <div class="stats"><div class="stat"><b>${L.correct}/${L.total}</b><span>richtig</span></div><div class="stat"><b>${L.newWords.length}</b><span>neue Wörter</span></div><div class="stat"><b>🔥 ${state.streak}</b><span>${state.streak===1?"Tag":"Tage"} in Folge</span></div></div>
+      <p style="margin:0" class="muted">${stars===3?"Perfekt! Du bist richtig gut.":stars===2?"Gut gemacht! Morgen wird's noch besser.":"Dranbleiben lohnt sich! Die schweren Wörter kommen bald wieder."}</p>
+    </div><button class="btn sun" data-go="home">Zur Übersicht</button>`;
+  tone(true); L=null; view="done";
+}
+
+/* ---------- Klicks ---------- */
+document.addEventListener("click", e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.say){ say(b.dataset.say); return; }
+  if(b.dataset.slow){ say(b.dataset.slow,true); return; }
+  if(b.dataset.go){ if(b.dataset.go==="parents" && !parentsOpen){ pinBox(); return; } if(b.dataset.go==="home") parentsOpen=false; view=b.dataset.go; render(); return; }
+  if(b.dataset.lesson){ const l=LESSONS.find(x=>x.id===b.dataset.lesson); if(l&&unlocked(l)) startLesson(l,"learn"); return; }
+  const act=b.dataset.act;
+  if(act==="start"){ const c=currentLesson(); if(c) startLesson(c,"learn"); return; }
+  if(act==="review"){ if(learnedWords().length) startLesson(null,"review"); return; }
+  if(act==="next"){ L.i++; renderStep(); return; }
+  if(act==="quit"){ confirmBox("Lektion wirklich beenden? Der Fortschritt dieser Lektion geht verloren.","Beenden",()=>{L=null;view="home";render();}); return; }
+  if(act==="reset"){ confirmBox("Wirklich alles zurücksetzen? Alle Sterne und Wörter sind dann weg.","Zurücksetzen",()=>{const n=state.name;state=blank();state.name=n;save();render();}); return; }
+  if(!L) return;
+  const s=L.steps[L.i];
+  if(b.dataset.ans!==undefined && !L.answered){
+    const ok=b.dataset.ans===s.en;
+    document.querySelectorAll(".opt").forEach(o=>{o.disabled=true; if(o.dataset.ans===s.en) o.classList.add("right");});
+    if(!ok) b.classList.add("wrong");
+    const w=WORD[s.en];
+    answer(ok, s.type==="en2de"?`${w.en} = ${w.de}`:`${w.de} = ${w.en}`, s.type==="de2en"?w.en:null);
+    return;
+  }
+  if(b.dataset.ml!==undefined || b.dataset.mr!==undefined){
+    const side=b.dataset.ml!==undefined?"left":"right", key=b.dataset.ml??b.dataset.mr;
+    document.querySelectorAll(`[data-${side==="left"?"ml":"mr"}]`).forEach(o=>o.classList.remove("sel"));
+    b.classList.add("sel"); L.match[side]=key;
+    if(side==="left") say(key);
+    const m=L.match;
+    if(m.left&&m.right){
+      const l=document.querySelector(`[data-ml="${CSS.escape(m.left)}"]`), r=document.querySelector(`[data-mr="${CSS.escape(m.right)}"]`);
+      if(m.left===m.right){ l.className="opt gone"; r.className="opt gone"; m.left_ok++; tone(true);
+        if(m.left_ok===s.words.length){ const ok=m.miss<=1; if(!s.retry){L.total++; if(ok)L.correct++;} L.answered=true;
+          $("#fb").innerHTML=`<div class="feedback ok"><h3>${m.miss?"Alle Paare gefunden! 👍":"Alle Paare, ohne Fehler! ⭐"}</h3><button class="btn good" data-act="next">Weiter</button></div>`; }
+      } else { m.miss++; tone(false); [l,r].forEach(x=>{x.classList.remove("sel");x.classList.add("shake");setTimeout(()=>x.classList.remove("shake"),400);}); }
+      m.left=null; m.right=null;
+    }
+    return;
+  }
+  if(b.dataset.tile!==undefined && !L.answered){ const t=L.tiles.find(x=>x.i==b.dataset.tile); t.used=true; L.built.push(t.i);
+    if(s.type==="sentence") say(t.c); drawTiles(); return; }
+  if(b.dataset.unt!==undefined && !L.answered){ const ti=L.built.splice(+b.dataset.unt,1)[0]; L.tiles.find(x=>x.i===ti).used=false; drawTiles(); return; }
+  if(act==="check" && !L.answered){
+    const sep = s.type==="sentence"?" ":"";
+    const built=L.built.map(i=>L.tiles.find(t=>t.i===i).c).join(sep);
+    if(s.type==="spell"){ const ok=norm(built)===norm(s.en); answer(ok, s.en, s.en); }
+    else { const ok=norm(built)===norm(s.s[0]); answer(ok, s.s[0], s.s[0]); }
+  }
+});
+
+render();
+initCloud();
+</script>
+</body>
+</html>

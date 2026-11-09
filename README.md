@@ -7,7 +7,9 @@ Täglich 10–15 Minuten, mit automatischer Wiederholung nach dem Karteikasten-P
 ## Auf GitHub Pages veröffentlichen
 
 1. Neues Repository anlegen (z. B. `english-lernen`).
-2. `index.html` und diese `README.md` hochladen („Add file → Upload files“).
+2. Alle Dateien gemeinsam in denselben Ordner hochladen („Add file → Upload files“):
+   `index.html`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `favicon-32.png`, `favicon.svg`, `manifest.webmanifest`, `README.md`.
+   Die Icon-Dateien sorgen dafür, dass am Home-Bildschirm die britische Flagge erscheint und nicht ein anderes Logo deiner GitHub-Seite.
 3. **Settings → Pages → Branch: `main` / Ordner: `/ (root)` → Save**.
 4. Nach 1–2 Minuten ist die App erreichbar unter `https://<dein-name>.github.io/english-lernen/`.
 5. Am iPad in Safari öffnen → Teilen → **Zum Home-Bildschirm**. Dann startet sie wie eine App.
